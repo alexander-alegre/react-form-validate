@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "form-validations": "^1.1.0",
+    "is-email": "^1.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-router-dom": "^4.1.2"
+    "react-router-dom": "^4.1.2",
+    "react-s-alert": "^1.3.0"
   },
   "devDependencies": {
     "react-scripts": "1.0.11"

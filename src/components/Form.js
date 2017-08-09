@@ -1,6 +1,21 @@
 import React from 'react';
+import { validString, validBool, validDateFormat, validNumber } from 'form-validations';
+import isEmail from 'is-email';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+
+// optional - you can choose the effect you want 
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
+import 'react-s-alert/dist/s-alert-css-effects/scale.css';
+import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
+import 'react-s-alert/dist/s-alert-css-effects/flip.css';
+import 'react-s-alert/dist/s-alert-css-effects/genie.css';
+import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
+import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
+
 
 import Nav from './Nav';
+
 
 class Form extends React.Component {
   constructor(props) {
@@ -16,20 +31,57 @@ class Form extends React.Component {
     }
   }
 
-    // add classes to form depending if valdiation passed or not
-    // has-success
-    // has-warning
-    // has-danger
-  validateName = (name) => {
-    // needs to only contain letters and has to be set
-    this.setState({ fullName: name.target.value }, () => {
-      console.log(this.state.fullName);
+  trimAndLower(str) {
+    return str.trim().toLowerCase();
+  }
+
+  showAlert(msg) {
+    return Alert.error(msg, {
+      position: 'bottom-right',
+      effect: 'genie',
+      beep: false,
+      timeout: 2000,
+      offset: 0,
+      html: false
     });
   }
+
+  showValid(id) {
+    document.querySelector(id).classList.add('has-success');
+    document.querySelector(id).classList.remove('has-danger');
+  }
+
+  showInvalid(id, msg) {
+    document.querySelector(id).classList.remove('has-success');
+    document.querySelector(id).classList.add('has-danger');
+    this.showAlert(msg);
+  }
+
+  validateName = (name) => {
+    // needs to only contain letters and has to be set
+    const isString = validString('Not a string');
+    const letters = /^[A-Za-z]+$/;
+    if (name.target.value.trim().length > 1 && isString(name.target.value.trim()) && name.target.value.trim().match(letters)) {
+      // condition passes
+      this.setState({ fullName: this.trimAndLower(name.target.value) }, () => {
+        this.showValid('#name-input');
+      });
+    } else {
+      // conditions do not pass
+      this.showInvalid('#name-input', 'Name field is required and may only contain letters.');
+      // throw alert
+    }
+  }
+
   validateEmail = (email) => {
-    this.setState({ emailAddress: email.target.value }, () => {
-      console.log(this.state.emailAddress);
-    });
+    if(isEmail(email.target.value)) {
+      this.setState({ emailAddress: email.target.value }, () => {
+        this.showValid('#email-input');
+      });
+    } else {
+      this.showInvalid('#email-input','Email is required and has to be a valid email.')
+    }
+
   }
   validateWebsite = (url) => {
     // needs to be a valid website and has to be set
@@ -65,7 +117,15 @@ class Form extends React.Component {
   handleSubmit = (e) => {
     // get all data and redirect to data page
     e.preventDefault();
-    console.log('submitted form');
+    console.log(
+      this.state.fullName,
+      this.state.emailAddress,
+      this.state.website,
+      this.state.dob,
+      this.state.gender,
+      this.state.rating,
+      this.state.subscribe
+    );
   }
 
   render() {
@@ -77,13 +137,13 @@ class Form extends React.Component {
         <hr />
         <form className="col-12 col-md-6">
           {/* name */}
-          <div className="form-group">
+          <div className="form-group" id="name-input">
             <label htmlFor="fullName">Full Name</label>
             <input onBlur={e => this.validateName(e)} type="text" className="form-control" id="fullName" aria-describedby="name-help" name="fullName" /*required*/ />
             <small id="name-help" className="form-text text-muted">This field is required, only letters allowed.</small>
           </div>
           {/* email */}
-          <div className="form-group">
+          <div className="form-group" id="email-input">
             <label htmlFor="emailAddress">Email Address</label>
             <input onBlur={e => this.validateEmail(e)} type="email" className="form-control" id="emailAddress" aria-describedby="email-help" /*required*/ />
             <small id="email-help" className="form-text text-muted">This field is required, has to be a valid email.</small>
@@ -144,6 +204,7 @@ class Form extends React.Component {
           </div>
           <button onClick={e => this.handleSubmit(e) } className="btn btn-primary">Submit!</button>
         </form>
+        <Alert stack={true} />
       </div>
     );
   }
