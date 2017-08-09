@@ -3,6 +3,18 @@ import React from 'react';
 import Nav from './Nav';
 
 class Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fullName = '',
+      emailAddress = '',
+      website = '',
+      dob = '',
+      gender = '',
+      rating = 0,
+      subscribe = false,
+    }
+  }
 
   // add classes to form depending if valdiation passed or not
   // has-success
@@ -10,16 +22,22 @@ class Form extends React.Component {
   // has-danger
 
   validateName() {
-
+    // needs to only contain letters and has to be set
   }
   validateEmail() {
-
+    // needs to be a valid email and has to be set
   }
   validateWebsite() {
-
+    // needs to be a valid website and has to be set
   }
   validateDOB() {
-
+    // needs to be a valid date and has to be set
+  }
+  validateGender() {
+    // needs to be either male, female or other and has to be set
+  }
+  validateRating() {
+    // needs to be a number between 1 and 5 and has to be set
   }
 
   render() {
@@ -59,7 +77,7 @@ class Form extends React.Component {
             <legend className="">Gender</legend>
             <div className="form-check">
               <label className="form-check-label">
-                <input type="radio" className="form-check-input" name="genderRadio" id="genderRadio" value="male" checked />
+                <input type="radio" className="form-check-input" name="gender" id="gender" value="male" checked />
                 <i className="fa fa-male" aria-hidden="true"></i> Male
               </label>
             </div>
