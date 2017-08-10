@@ -1,21 +1,11 @@
 import React from 'react';
-import { validString, validBool, validDateFormat, validNumber } from 'form-validations';
+import { validString, validBool, validDateFormat } from 'form-validations';
 import isEmail from 'is-email';
+import validUrl from 'valid-url';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
-
-// optional - you can choose the effect you want 
-import 'react-s-alert/dist/s-alert-css-effects/slide.css';
-import 'react-s-alert/dist/s-alert-css-effects/scale.css';
-import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
-import 'react-s-alert/dist/s-alert-css-effects/flip.css';
-import 'react-s-alert/dist/s-alert-css-effects/genie.css';
 import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
-import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
-
-
 import Nav from './Nav';
-
 
 class Form extends React.Component {
   constructor(props) {
@@ -35,10 +25,14 @@ class Form extends React.Component {
     return str.trim().toLowerCase();
   }
 
+  isInArray(arr, val) {
+    return arr.indexOf(val.toLowerCase()) > -1;
+  }
+
   showAlert(msg) {
     return Alert.error(msg, {
       position: 'bottom-right',
-      effect: 'genie',
+      effect: 'jelly',
       beep: false,
       timeout: 2000,
       offset: 0,
@@ -56,7 +50,7 @@ class Form extends React.Component {
     document.querySelector(id).classList.add('has-danger');
     this.showAlert(msg);
   }
-
+  // name
   validateName = (name) => {
     // needs to only contain letters and has to be set
     const isString = validString('Not a string');
@@ -72,7 +66,7 @@ class Form extends React.Component {
       // throw alert
     }
   }
-
+  // email
   validateEmail = (email) => {
     if(isEmail(email.target.value)) {
       this.setState({ emailAddress: email.target.value }, () => {
@@ -81,39 +75,69 @@ class Form extends React.Component {
     } else {
       this.showInvalid('#email-input','Email is required and has to be a valid email.')
     }
-
   }
+  // website
   validateWebsite = (url) => {
-    // needs to be a valid website and has to be set
-    this.setState({ website: url.target.value }, () => {
-      console.log(this.state.website);
-    });
+    // needs to be a valid website using https and has to be set
+    if(validUrl.is_https_uri(url.target.value)) {
+      this.setState({ website: url.target.value }, () => {
+        this.showValid('#url-input');
+      });
+    } else {
+      this.showInvalid('#url-input', 'URL is required and needs to have https.');
+    }
   }
+  // date of birth
   validateDOB = (dob) => {
     // needs to be a valid date and has to be set
-    this.setState({ dob: dob.target.value }, () => {
-      console.log(this.state.dob);
-    });
+    const isDate = validDateFormat('Not a valid date!');
+    if (isDate(dob.target.value) && dob.target.value) {
+      this.setState({ dob: dob.target.value }, () => {
+        this.showValid('#dob-input');
+      });
+    } else {
+      this.showInvalid('#dob-input', 'Date is required and needs to be in date format');
+    }
   }
+  // gender
   validateGender = (gender) => {
     // needs to be either male, female or other and has to be set
-    this.setState({ gender: gender.target.value }, () => {
-      console.log(this.state.gender);
-    });
+    const validGender = validString('That gender is not valid!');
+    if (validGender(gender.target.value) && this.isInArray(['male', 'female', 'other'], gender.target.value)) {
+      this.setState({ gender: gender.target.value }, () => {
+        this.showValid('#gender-input');
+      });
+    } else {
+        this.showInvalid('#gender-input', 'Gender is required!');
+    }
   }
+  // rating
   validateRating = (rating) => {
     // needs to be a number between 1 and 5 and has to be set
-    this.setState({ rating: rating.target.value }, () => {
-      console.log(this.state.rating);
-    });
+    const validNum = validString('That is not a number!');
+    if(validNum(rating.target.value) && this.isInArray(['1','2','3','4','5'], rating.target.value)) {
+      this.setState({ rating: rating.target.value }, () => {
+        this.showValid('#rating-input');
+      });
+    } else {
+        this.showInvalid('#rating-input', 'Rating is required and can only be between 1 and 5!');
+    }
   }
+  // subscribe button
   validateSubscribe = (sub) => {
     // can either be true or false but not required
-    this.setState({ subscribe: sub.target.value }, () => {
-      console.log(this.state.subscribe);
-    });
-  }
+    if (document.querySelector('#check-box').checked) {
+      const validateCheckBox = validBool('This field can only be true or false');
+      if (validateCheckBox(sub.target.value)) {
+        this.setState({ subscribe: true }, () => {
+        });
+      }
+    } else {
+      this.setState({ subscribe: false });
+    }
 
+  }
+  // submit form
   handleSubmit = (e) => {
     // get all data and redirect to data page
     e.preventDefault();
@@ -149,19 +173,19 @@ class Form extends React.Component {
             <small id="email-help" className="form-text text-muted">This field is required, has to be a valid email.</small>
           </div>
           {/* website */}
-          <div className="form-group">
+          <div className="form-group" id="url-input">
             <label htmlFor="website">Website</label>
             <input onBlur={e => this.validateWebsite(e)} type="url" className="form-control" id="website" aria-describedby="website-help" /*required*/ />
             <small id="website-help" className="form-text text-muted">This field is required, has to be a valid URL.</small>
           </div>
           {/* date of birth */}
-          <div className="form-group">
+          <div className="form-group" id="dob-input">
             <label htmlFor="dob">Date of Birth</label>
             <input onBlur={e => this.validateDOB(e)} type="date" className="form-control" id="dob" aria-describedby="dob-help" /*required*/ />
             <small id="dob-help" className="form-text text-muted">This field is required</small>
           </div>
           {/* gender */}
-          <fieldset className="form-group">
+          <fieldset className="form-group" id="gender-input">
             <legend className="">Gender</legend>
             <div className="form-check">
               <label className="form-check-label">
@@ -178,12 +202,12 @@ class Form extends React.Component {
             <div className="form-check">
               <label className="form-check-label">
                 <input onBlur={e => this.validateGender(e)} type="radio" className="form-check-input" name="gender" id="gender" value="other" />
-                <i className="fa fa-code" aria-hidden="true"></i> Other
+                <i className="fa fa-genderless" aria-hidden="true"></i> Other
               </label>
             </div>
           </fieldset>
           {/* Rate the form */}
-          <div className="form-group">
+          <div className="form-group" id="rating-input">
             <label htmlFor="rateForm">Rate this Form</label>
             <select onBlur={ e => this.validateRating(e) } id="rateForm" className="form-control">
               <option value="5">5</option>
@@ -195,9 +219,9 @@ class Form extends React.Component {
             <small className="form-text text-muted">5 being the highest</small>
           </div>
           {/* subscribe button */}
-          <div className="form-check">
+          <div className="form-check" id="sub-input">
             <label htmlFor="" className="form-check-label">
-              <input onBlur={ e => this.validateRating(e) } type="checkbox" className="form-check-input" value="true"/>
+              <input onBlur={e => this.validateSubscribe(e) } type="checkbox" className="form-check-input" value="true" id="check-box" />
               <i className="fa fa-envelope" aria-hidden="true"></i> Subscribe!
             </label>
             <small className="form-text text-muted">Subscribe to our newsletter.</small>
