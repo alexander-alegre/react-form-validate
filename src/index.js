@@ -11,7 +11,7 @@ ReactDOM.render(
     <Switch>
       <Route exact path="/" component={App} />
       <Route path="/form" component={Form} />
-      <Route path="/data" component={Data} />
+      <Route path="/data" component={Data} props={this.props} />
     </Switch>
   </BrowserRouter>,
   document.querySelector('#app')

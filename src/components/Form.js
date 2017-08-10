@@ -23,7 +23,17 @@ class Form extends React.Component {
       genderValid: true,
       rating: 5,
       ratingValid: true,
-      subscribe: false
+      subscribe: false,
+      // userObj: {
+      //   "name": '',
+      //   "email": '',
+      //   "website": '',
+      //   "dob": '',
+      //   "gender": '',
+      //   "rating": '',
+      //   "subscribe": ''
+      // },
+      redirect: false,
     }
   }
 
@@ -62,7 +72,6 @@ class Form extends React.Component {
     const isString = validString('Not a string');
     const letters = /^[A-Za-z]+$/;
     if (name.target.value.trim().length > 1 && isString(name.target.value.trim()) && name.target.value.trim().match(letters)) {
-      // condition passes
       this.setState({ firstName: this.trimAndLower(name.target.value), nameValid: true }, () => {
         this.showValid('#name-input');
       });
@@ -73,6 +82,7 @@ class Form extends React.Component {
   }
   // email
   validateEmail = (email) => {
+    // can only be of type email and has to be set
     if(isEmail(email.target.value)) {
       this.setState({ emailAddress: email.target.value, emailValid: true }, () => {
         this.showValid('#email-input');
@@ -149,18 +159,22 @@ class Form extends React.Component {
   }
   // submit form
   handleSubmit = (e) => {
-    // get all data and redirect to data page
     e.preventDefault();
     if (this.state.nameValid && this.state.emailValid && this.state.websiteValid && this.state.dobValid && this.state.genderValid && this.state.ratingValid) {
-      console.log(
-        this.state.firstName,
-        this.state.emailAddress,
-        this.state.website,
-        this.state.dob,
-        this.state.gender,
-        this.state.rating,
-        this.state.subscribe
-      );
+      const userObj = 
+        {
+          "name": this.state.firstName,
+          "email": this.state.emailAddress,
+          "website": this.state.website,
+          "dob": this.state.dob,
+          "gender": this.state.gender,
+          "rating": this.state.rating,
+          "subscribe": this.state.subscribe
+        }
+      console.log(userObj);
+      // redirect to /data and send userObj
+        this.props.history.push('/data');
+
     } else {
       this.showInvalid('#submit-btn', 'Please make sure to fill out all required fields.');
     }
@@ -177,13 +191,13 @@ class Form extends React.Component {
           {/* name */}
           <div className="form-group" id="name-input">
             <label htmlFor="firstName">First Name</label>
-            <input onBlur={e => this.validateName(e)} type="text" className="form-control" id="firstName" aria-describedby="name-help" name="firstName" /*required*/ />
+            <input onBlur={e => this.validateName(e)} type="text" className="form-control" id="firstName" aria-describedby="name-help" name="firstName" required />
             <small id="name-help" className="form-text text-muted">This field is required, only letters allowed.</small>
           </div>
           {/* email */}
           <div className="form-group" id="email-input">
             <label htmlFor="emailAddress">Email Address</label>
-            <input onBlur={e => this.validateEmail(e)} type="email" className="form-control" id="emailAddress" aria-describedby="email-help" /*required*/ />
+            <input onBlur={e => this.validateEmail(e)} type="email" className="form-control" id="emailAddress" aria-describedby="email-help" required />
             <small id="email-help" className="form-text text-muted">This field is required, has to be a valid email.</small>
           </div>
           {/* website */}
@@ -195,7 +209,7 @@ class Form extends React.Component {
           {/* date of birth */}
           <div className="form-group" id="dob-input">
             <label htmlFor="dob">Date of Birth</label>
-            <input onBlur={e => this.validateDOB(e)} type="date" className="form-control" id="dob" aria-describedby="dob-help" /*required*/ />
+            <input onBlur={e => this.validateDOB(e)} type="date" className="form-control" id="dob" aria-describedby="dob-help" required />
             <small id="dob-help" className="form-text text-muted">This field is required</small>
           </div>
           {/* gender */}
@@ -240,7 +254,7 @@ class Form extends React.Component {
             </label>
             <small className="form-text text-muted">Subscribe to our newsletter.</small>
           </div>
-          <button onClick={e => this.handleSubmit(e) } className="btn btn-primary" id="submit-btn">Submit!</button>
+          <button onClick={ e => this.handleSubmit(e) } className="btn btn-primary" id="submit-btn">Submit!</button>
         </form>
         <Alert stack={true} />
       </div>
