@@ -5,4 +5,10 @@ You can find the most recent version of this guide [here](https://github.com/fac
 
 ## Form Validation using ReactJS
 
-For the live version on Heroku go [here]()
+###Use this commands to download and run app locally.
+```
+git clone git@github.com:alexander-alegre/react-form-validate.git
+cd react-form-validate
+npm install
+npm start
+```

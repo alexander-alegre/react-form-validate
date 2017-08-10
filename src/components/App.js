@@ -2,27 +2,20 @@ import React from 'react';
 import Nav from './Nav';
 
 
-
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-
-    }
-  }
-
-  onSubmit(data) {
-    console.log(data);
-  }
-
-  handleErrors(errors) {
-    console.log(`You have ${errors.length} error(s) to fix`);
-  }
-
   render() {
     return(
       <div>
         <Nav/>
+        <br/>
+        <div className="jumbotron">
+          <h1 className="display-3 text-center">ReactJS Form</h1>
+          <hr className="my-4" />
+          <p>This is a display of ReactJS using various libraries to do form validation. Cookies are used to save and display data.</p>
+          <p className="lead">
+            <a className="btn btn-primary btn-lg" href="/form" role="button">Start Now!</a>
+          </p>
+        </div>
       </div>
     );
   }

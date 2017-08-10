@@ -7,12 +7,12 @@ import Form from './components/Form';
 import Data from './components/Data';
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route exact path="/" component={App} />
-      <Route path="/form" component={Form} />
-      <Route path="/data" component={Data} props={this.props} />
-    </Switch>
-  </BrowserRouter>,
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route path="/form" component={Form} />
+        <Route path="/data" component={Data} />
+      </Switch>
+    </BrowserRouter>,
   document.querySelector('#app')
 );

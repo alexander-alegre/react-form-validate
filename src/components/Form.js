@@ -6,6 +6,8 @@ import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
 import Nav from './Nav';
+import { bake_cookie } from 'sfcookies';
+
 
 class Form extends React.Component {
   constructor(props) {
@@ -24,15 +26,6 @@ class Form extends React.Component {
       rating: 5,
       ratingValid: true,
       subscribe: false,
-      // userObj: {
-      //   "name": '',
-      //   "email": '',
-      //   "website": '',
-      //   "dob": '',
-      //   "gender": '',
-      //   "rating": '',
-      //   "subscribe": ''
-      // },
       redirect: false,
     }
   }
@@ -171,9 +164,10 @@ class Form extends React.Component {
           "rating": this.state.rating,
           "subscribe": this.state.subscribe
         }
-      console.log(userObj);
-      // redirect to /data and send userObj
-        this.props.history.push('/data');
+      bake_cookie('userObj', userObj);
+        this.props.history.push({
+          pathname: '/data',
+        });
 
     } else {
       this.showInvalid('#submit-btn', 'Please make sure to fill out all required fields.');
@@ -262,4 +256,4 @@ class Form extends React.Component {
   }
 }
 
-export default Form;
+export default (Form);
