@@ -11,13 +11,19 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fullName: '',
+      firstName: '',
+      nameValid: false,
       emailAddress: '',
+      emailValid: false,
       website: '',
+      websiteValid: false,
       dob: '',
+      dobValid: false,
       gender: 'male',
+      genderValid: true,
       rating: 5,
-      subscribe: false,
+      ratingValid: true,
+      subscribe: false
     }
   }
 
@@ -57,34 +63,35 @@ class Form extends React.Component {
     const letters = /^[A-Za-z]+$/;
     if (name.target.value.trim().length > 1 && isString(name.target.value.trim()) && name.target.value.trim().match(letters)) {
       // condition passes
-      this.setState({ fullName: this.trimAndLower(name.target.value) }, () => {
+      this.setState({ firstName: this.trimAndLower(name.target.value), nameValid: true }, () => {
         this.showValid('#name-input');
       });
     } else {
-      // conditions do not pass
       this.showInvalid('#name-input', 'Name field is required and may only contain letters.');
-      // throw alert
+      this.setState({ nameValid: false });
     }
   }
   // email
   validateEmail = (email) => {
     if(isEmail(email.target.value)) {
-      this.setState({ emailAddress: email.target.value }, () => {
+      this.setState({ emailAddress: email.target.value, emailValid: true }, () => {
         this.showValid('#email-input');
       });
     } else {
       this.showInvalid('#email-input','Email is required and has to be a valid email.')
+      this.setState({ emailValid: false });
     }
   }
   // website
   validateWebsite = (url) => {
     // needs to be a valid website using https and has to be set
     if(validUrl.is_https_uri(url.target.value)) {
-      this.setState({ website: url.target.value }, () => {
+      this.setState({ website: url.target.value, websiteValid: true }, () => {
         this.showValid('#url-input');
       });
     } else {
       this.showInvalid('#url-input', 'URL is required and needs to have https.');
+      this.setState({ websiteValid: false });
     }
   }
   // date of birth
@@ -92,11 +99,12 @@ class Form extends React.Component {
     // needs to be a valid date and has to be set
     const isDate = validDateFormat('Not a valid date!');
     if (isDate(dob.target.value) && dob.target.value) {
-      this.setState({ dob: dob.target.value }, () => {
+      this.setState({ dob: dob.target.value, dobValid: true }, () => {
         this.showValid('#dob-input');
       });
     } else {
       this.showInvalid('#dob-input', 'Date is required and needs to be in date format');
+      this.setState({ dobValid: false });
     }
   }
   // gender
@@ -104,11 +112,12 @@ class Form extends React.Component {
     // needs to be either male, female or other and has to be set
     const validGender = validString('That gender is not valid!');
     if (validGender(gender.target.value) && this.isInArray(['male', 'female', 'other'], gender.target.value)) {
-      this.setState({ gender: gender.target.value }, () => {
+      this.setState({ gender: gender.target.value, genderValid: true }, () => {
         this.showValid('#gender-input');
       });
     } else {
         this.showInvalid('#gender-input', 'Gender is required!');
+        this.setState({ genderValid: false });
     }
   }
   // rating
@@ -116,11 +125,12 @@ class Form extends React.Component {
     // needs to be a number between 1 and 5 and has to be set
     const validNum = validString('That is not a number!');
     if(validNum(rating.target.value) && this.isInArray(['1','2','3','4','5'], rating.target.value)) {
-      this.setState({ rating: rating.target.value }, () => {
+      this.setState({ rating: rating.target.value, ratingValid: true }, () => {
         this.showValid('#rating-input');
       });
     } else {
         this.showInvalid('#rating-input', 'Rating is required and can only be between 1 and 5!');
+        this.setState({ ratingValid: false });
     }
   }
   // subscribe button
@@ -141,15 +151,19 @@ class Form extends React.Component {
   handleSubmit = (e) => {
     // get all data and redirect to data page
     e.preventDefault();
-    console.log(
-      this.state.fullName,
-      this.state.emailAddress,
-      this.state.website,
-      this.state.dob,
-      this.state.gender,
-      this.state.rating,
-      this.state.subscribe
-    );
+    if (this.state.nameValid && this.state.emailValid && this.state.websiteValid && this.state.dobValid && this.state.genderValid && this.state.ratingValid) {
+      console.log(
+        this.state.firstName,
+        this.state.emailAddress,
+        this.state.website,
+        this.state.dob,
+        this.state.gender,
+        this.state.rating,
+        this.state.subscribe
+      );
+    } else {
+      this.showInvalid('#submit-btn', 'Please make sure to fill out all required fields.');
+    }
   }
 
   render() {
@@ -162,8 +176,8 @@ class Form extends React.Component {
         <form className="col-12 col-md-6">
           {/* name */}
           <div className="form-group" id="name-input">
-            <label htmlFor="fullName">Full Name</label>
-            <input onBlur={e => this.validateName(e)} type="text" className="form-control" id="fullName" aria-describedby="name-help" name="fullName" /*required*/ />
+            <label htmlFor="firstName">First Name</label>
+            <input onBlur={e => this.validateName(e)} type="text" className="form-control" id="firstName" aria-describedby="name-help" name="firstName" /*required*/ />
             <small id="name-help" className="form-text text-muted">This field is required, only letters allowed.</small>
           </div>
           {/* email */}
@@ -226,7 +240,7 @@ class Form extends React.Component {
             </label>
             <small className="form-text text-muted">Subscribe to our newsletter.</small>
           </div>
-          <button onClick={e => this.handleSubmit(e) } className="btn btn-primary">Submit!</button>
+          <button onClick={e => this.handleSubmit(e) } className="btn btn-primary" id="submit-btn">Submit!</button>
         </form>
         <Alert stack={true} />
       </div>
