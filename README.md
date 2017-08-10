@@ -5,4 +5,4 @@ You can find the most recent version of this guide [here](https://github.com/fac
 
 ## Form Validation using ReactJS
 
-For the live version on Heroku go [here]()
+For the live version on Heroku go [here](https://react-form-validate.herokuapp.com/)
