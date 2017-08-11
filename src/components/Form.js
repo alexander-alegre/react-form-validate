@@ -6,6 +6,7 @@ import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
 import Nav from './Nav';
+import Instructions from './Instructions';
 import { bake_cookie } from 'sfcookies';
 
 
@@ -18,6 +19,7 @@ class Form extends React.Component {
       emailAddress: '',
       emailValid: false,
       website: '',
+      smallWebsite: '',
       websiteValid: false,
       dob: '',
       dobValid: false,
@@ -30,8 +32,15 @@ class Form extends React.Component {
     }
   }
 
+  smallUrl(uri) {
+    let parse = document.createElement('a');
+    parse.href = uri;
+    return parse.hostname;
+  }
+
   trimAndLower(str) {
-    return str.trim().toLowerCase();
+    let newString = str.trim().toLowerCase();
+    return newString.charAt(0).toUpperCase() + newString.slice(1);
   }
 
   isInArray(arr, val) {
@@ -89,7 +98,13 @@ class Form extends React.Component {
   validateWebsite = (url) => {
     // needs to be a valid website using https and has to be set
     if(validUrl.is_https_uri(url.target.value)) {
-      this.setState({ website: url.target.value, websiteValid: true }, () => {
+      this.setState(
+        { 
+          website: url.target.value,
+          smallWebsite: this.smallUrl(url.target.value),
+          websiteValid: true 
+        }
+        , () => {
         this.showValid('#url-input');
       });
     } else {
@@ -115,7 +130,7 @@ class Form extends React.Component {
     // needs to be either male, female or other and has to be set
     const validGender = validString('That gender is not valid!');
     if (validGender(gender.target.value) && this.isInArray(['male', 'female', 'other'], gender.target.value)) {
-      this.setState({ gender: gender.target.value, genderValid: true }, () => {
+      this.setState({ gender: this.trimAndLower(gender.target.value), genderValid: true }, () => {
         this.showValid('#gender-input');
       });
     } else {
@@ -159,6 +174,7 @@ class Form extends React.Component {
           "name": this.state.firstName,
           "email": this.state.emailAddress,
           "website": this.state.website,
+          "smallWebsite": this.state.smallWebsite,
           "dob": this.state.dob,
           "gender": this.state.gender,
           "rating": this.state.rating,
@@ -181,75 +197,81 @@ class Form extends React.Component {
         <br/>
         <h3 className="text-center">All Fields Are Required</h3>
         <hr />
-        <form className="col-12 col-md-6">
-          {/* name */}
-          <div className="form-group" id="name-input">
-            <label htmlFor="firstName">First Name</label>
-            <input onBlur={e => this.validateName(e)} type="text" className="form-control" id="firstName" aria-describedby="name-help" name="firstName" required />
-            <small id="name-help" className="form-text text-muted">This field is required, only letters allowed.</small>
-          </div>
-          {/* email */}
-          <div className="form-group" id="email-input">
-            <label htmlFor="emailAddress">Email Address</label>
-            <input onBlur={e => this.validateEmail(e)} type="email" className="form-control" id="emailAddress" aria-describedby="email-help" required />
-            <small id="email-help" className="form-text text-muted">This field is required, has to be a valid email.</small>
-          </div>
-          {/* website */}
-          <div className="form-group" id="url-input">
-            <label htmlFor="website">Website</label>
-            <input onBlur={e => this.validateWebsite(e)} type="url" className="form-control" id="website" aria-describedby="website-help" /*required*/ />
-            <small id="website-help" className="form-text text-muted">This field is required, has to be a valid URL.</small>
-          </div>
-          {/* date of birth */}
-          <div className="form-group" id="dob-input">
-            <label htmlFor="dob">Date of Birth</label>
-            <input onBlur={e => this.validateDOB(e)} type="date" className="form-control" id="dob" aria-describedby="dob-help" required />
-            <small id="dob-help" className="form-text text-muted">This field is required</small>
-          </div>
-          {/* gender */}
-          <fieldset className="form-group" id="gender-input">
-            <legend className="">Gender</legend>
-            <div className="form-check">
-              <label className="form-check-label">
-                <input onBlur={e => this.validateGender(e)} type="radio" className="form-check-input" name="gender" id="gender" value="male" defaultChecked />
-                <i className="fa fa-male" aria-hidden="true"></i> Male
-              </label>
+        <div className="row">
+          <div className="col-12 col-md-6">
+          <form>
+            {/* name */}
+            <div className="form-group" id="name-input">
+              <label htmlFor="firstName">First Name</label>
+              <input onBlur={e => this.validateName(e)} type="text" className="form-control" id="firstName" aria-describedby="name-help" name="firstName" required />
+              <small id="name-help" className="form-text text-muted">This field is required, only letters allowed.</small>
             </div>
-            <div className="form-check">
-              <label className="form-check-label">
-                <input onBlur={e => this.validateGender(e)} type="radio" className="form-check-input" name="gender" id="gender" value="female" />
-                <i className="fa fa-female" aria-hidden="true"></i> Female
-              </label>
+            {/* email */}
+            <div className="form-group" id="email-input">
+              <label htmlFor="emailAddress">Email Address</label>
+              <input onBlur={e => this.validateEmail(e)} type="email" className="form-control" id="emailAddress" aria-describedby="email-help" required />
+              <small id="email-help" className="form-text text-muted">This field is required, has to be a valid email.</small>
             </div>
-            <div className="form-check">
-              <label className="form-check-label">
-                <input onBlur={e => this.validateGender(e)} type="radio" className="form-check-input" name="gender" id="gender" value="other" />
-                <i className="fa fa-genderless" aria-hidden="true"></i> Other
-              </label>
+            {/* website */}
+            <div className="form-group" id="url-input">
+              <label htmlFor="website">Website</label>
+              <input onBlur={e => this.validateWebsite(e)} type="url" className="form-control" id="website" aria-describedby="website-help" /*required*/ />
+              <small id="website-help" className="form-text text-muted">This field is required, has to be a valid URL.</small>
             </div>
-          </fieldset>
-          {/* Rate the form */}
-          <div className="form-group" id="rating-input">
-            <label htmlFor="rateForm">Rate this Form</label>
-            <select onBlur={ e => this.validateRating(e) } id="rateForm" className="form-control">
-              <option value="5">5</option>
-              <option value="4">4</option>
-              <option value="3">3</option>
-              <option value="2">2</option>
-              <option value="1">1</option>
-            </select>
-            <small className="form-text text-muted">5 being the highest</small>
+            {/* date of birth */}
+            <div className="form-group" id="dob-input">
+              <label htmlFor="dob">Date of Birth</label>
+              <input onBlur={e => this.validateDOB(e)} type="date" className="form-control" id="dob" aria-describedby="dob-help" required />
+              <small id="dob-help" className="form-text text-muted">This field is required</small>
+            </div>
+            {/* gender */}
+            <fieldset className="form-group" id="gender-input">
+              <legend className="">Gender</legend>
+              <div className="form-check">
+                <label className="form-check-label">
+                  <input onBlur={e => this.validateGender(e)} type="radio" className="form-check-input" name="gender" id="gender" value="male" defaultChecked />
+                  <i className="fa fa-male" aria-hidden="true"></i> Male
+                </label>
+              </div>
+              <div className="form-check">
+                <label className="form-check-label">
+                  <input onBlur={e => this.validateGender(e)} type="radio" className="form-check-input" name="gender" id="gender" value="female" />
+                  <i className="fa fa-female" aria-hidden="true"></i> Female
+                </label>
+              </div>
+              <div className="form-check">
+                <label className="form-check-label">
+                  <input onBlur={e => this.validateGender(e)} type="radio" className="form-check-input" name="gender" id="gender" value="other" />
+                  <i className="fa fa-genderless" aria-hidden="true"></i> Other
+                </label>
+              </div>
+            </fieldset>
+            {/* Rate the form */}
+            <div className="form-group" id="rating-input">
+              <label htmlFor="rateForm">Rate this Form</label>
+              <select onBlur={ e => this.validateRating(e) } id="rateForm" className="form-control">
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+              </select>
+              <small className="form-text text-muted">5 being the highest</small>
+            </div>
+            {/* subscribe button */}
+            <div className="form-check" id="sub-input">
+              <label htmlFor="" className="form-check-label">
+                <input onBlur={e => this.validateSubscribe(e) } type="checkbox" className="form-check-input" value="true" id="check-box" />
+                <i className="fa fa-envelope" aria-hidden="true"></i> Subscribe!
+              </label>
+              <small className="form-text text-muted">Subscribe to our newsletter.</small>
+            </div>
+            <button onClick={ e => this.handleSubmit(e) } className="btn btn-primary" id="submit-btn">Submit!</button>
+          </form>
           </div>
-          {/* subscribe button */}
-          <div className="form-check" id="sub-input">
-            <label htmlFor="" className="form-check-label">
-              <input onBlur={e => this.validateSubscribe(e) } type="checkbox" className="form-check-input" value="true" id="check-box" />
-              <i className="fa fa-envelope" aria-hidden="true"></i> Subscribe!
-            </label>
-            <small className="form-text text-muted">Subscribe to our newsletter.</small>
-          </div>
-          <button onClick={ e => this.handleSubmit(e) } className="btn btn-primary" id="submit-btn">Submit!</button>
-        </form>
+          {/* instructions */}
+          <Instructions />
+        </div>
         <Alert stack={true} />
       </div>
     );

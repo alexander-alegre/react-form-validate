@@ -1,6 +1,8 @@
 import React from 'react';
 import Nav from './Nav';
 import { read_cookie, delete_cookie } from 'sfcookies';
+import moment from 'moment';
+
 
 
 class Data extends React.Component {
@@ -11,9 +13,16 @@ class Data extends React.Component {
     });
   }
 
+  
+
+  prettyDate(date) {
+    return moment(date).format('LL');
+  }
+
   render() {
+
     const userData = read_cookie('userObj');
-    console.log(userData);
+    const niceDate = this.prettyDate(userData.dob);
 
     return (
       <div>
@@ -23,6 +32,7 @@ class Data extends React.Component {
           userData.name 
           ?
             <div className="card">
+              <br />
               <img className="mx-auto d-block col-lg-4 col-md-6 col-sm-8" src="./user.png" alt="User Image" />
               <div className="card-block">
                 <h4 className="card-title text-center">
@@ -30,11 +40,17 @@ class Data extends React.Component {
                     <h1 className="card-title">{userData.name}</h1>
                     <p className="card-text">
                       {
-                        userData.subscribed 
+                        userData.subscribe 
                         ?
-                          <span>{userData.name} is subscribed!</span>
+                          <span>
+                            <small>Subscription status </small>
+                            <i className="text-success fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i>
+                          </span>
                         :
-                          <span>{userData.name} is not subscribed..</span>
+                          <span>
+                            <small>Subscription status </small>
+                            <i className="text-danger sub-stat fa fa-thumbs-o-down fa-lg" aria-hidden="true"></i>
+                          </span>
                       }
                     </p>
                   </div>
@@ -47,12 +63,12 @@ class Data extends React.Component {
                     <li className="list-group-item">
                       <i className="fa fa-link" aria-hidden="true"></i>
                       &nbsp;
-                      <a href={userData.website} target="_blank">{userData.website}</a>
+                      <a href={userData.website} target="_blank">{userData.smallWebsite}</a>
                     </li>
                     <li className="list-group-item">
                       <i className="fa fa-calendar" aria-hidden="true"></i>
                       &nbsp;
-                      {userData.dob}
+                       {niceDate} 
                     </li>
                     <li className="list-group-item">
                       <i className="fa fa-user-o" aria-hidden="true"></i>
