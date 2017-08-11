@@ -276,7 +276,9 @@ class Form extends React.Component {
         <footer className="footer">
           <hr />
           <div>
-            <p className="text-muted text-center"><i className="fa fa-code text-info" aria-hidden="true"></i> by Alexander Alegre</p>
+            <p className="text-muted text-center">
+              <i className="fa fa-code text-info" aria-hidden="true"></i> with <i className="fa fa-heart text-danger" aria-hidden="true"></i> by Alexander Alegre
+            </p>
           </div>
         </footer>
         <br />
