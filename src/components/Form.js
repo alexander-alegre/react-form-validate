@@ -273,6 +273,13 @@ class Form extends React.Component {
           <Instructions />
         </div>
         <Alert stack={true} />
+        <footer className="footer">
+          <hr />
+          <div>
+            <p className="text-muted text-center"><i className="fa fa-code text-info" aria-hidden="true"></i> by Alexander Alegre</p>
+          </div>
+        </footer>
+        <br />
       </div>
     );
   }

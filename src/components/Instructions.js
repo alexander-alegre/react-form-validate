@@ -46,7 +46,7 @@ class Instructions extends React.Component {
               <small>* required</small>
             </div>
             <p className="mb-1">Field has to be a valid date.</p>
-            <small>01/12/1990</small>
+            <small>01/01/1990</small>
           </a>
         </div>
         {/* gender */}
